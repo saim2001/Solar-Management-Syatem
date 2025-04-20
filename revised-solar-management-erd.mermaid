@@ -1,0 +1,269 @@
+erDiagram
+    Customer {
+        bigint customer_id PK "NOT NULL"
+        varchar50 name "NOT NULL"
+        varchar255 address 
+        varchar255 contact_information
+        enum status "DEFAULT 'active'"
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+        decimal10_6 latitude
+        decimal10_6 longitude
+        varchar100 customer_type
+        varchar100 email "NOT NULL"
+        varchar20 phone "NOT NULL"
+    }
+
+    Quotation {
+        bigint quotation_id PK "NOT NULL"
+        bigint customer_id FK "NOT NULL"
+        bigint user_id FK "NOT NULL"
+        decimal15_2 estimated_total "NOT NULL"
+        timestamp date "DEFAULT CURRENT_TIMESTAMP"
+        enum status "DEFAULT 'draft'"
+        varchar255 notes
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+        date valid_until
+        decimal15_2 discount_amount
+    }
+
+    Quotation_Item {
+        bigint quotation_item_id PK "NOT NULL"
+        bigint quotation_id FK "NOT NULL"
+        bigint product_id FK "NOT NULL"
+        decimal10_2 price "NOT NULL"
+        int quantity "NOT NULL"
+        decimal10_2 discount
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+    }
+
+    Supplier {
+        bigint supplier_id PK "NOT NULL"
+        varchar50 name "NOT NULL"
+        varchar255 address
+        varchar255 contact_information
+        enum status "DEFAULT 'active'"
+        varchar100 email "NOT NULL"
+        varchar20 phone "NOT NULL"
+        varchar100 payment_terms
+        decimal5_2 standard_discount
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+    }
+
+    Product {
+        bigint product_id PK "NOT NULL"
+        bigint supplier_id FK "NOT NULL"
+        varchar100 name "NOT NULL"
+        varchar50 type "NOT NULL"
+        int stock_quantity "NOT NULL"
+        decimal10_2 price "NOT NULL"
+        varchar255 description
+        int warranty_months
+        varchar100 model_number
+        varchar100 manufacturer
+        enum status "DEFAULT 'active'"
+        decimal10_2 cost_price
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+    }
+
+    Purchase {
+        bigint purchase_id PK "NOT NULL"
+        bigint supplier_id FK "NOT NULL"
+        bigint user_id FK "NOT NULL"
+        decimal15_2 total_amount "NOT NULL"
+        timestamp date "DEFAULT CURRENT_TIMESTAMP"
+        enum status "DEFAULT 'pending'"
+        varchar255 notes
+        varchar100 payment_method
+        varchar100 payment_status
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+    }
+
+    Purchase_Item {
+        bigint purchase_item_id PK "NOT NULL"
+        bigint purchase_id FK "NOT NULL"
+        bigint product_id FK "NOT NULL"
+        int quantity "NOT NULL"
+        decimal10_2 cost_per_unit "NOT NULL"
+        decimal10_2 total_cost
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+    }
+
+    Invoice {
+        bigint invoice_id PK "NOT NULL"
+        bigint customer_id FK "NOT NULL"
+        bigint project_id FK "NULL"
+        decimal5_2 taxation
+        decimal5_2 total_discount
+        decimal15_2 total_amount "NOT NULL"
+        timestamp date "DEFAULT CURRENT_TIMESTAMP"
+        enum status "DEFAULT 'unpaid'"
+        date due_date
+        varchar100 payment_method
+        varchar100 payment_status
+        varchar255 notes
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+    }
+
+    Invoice_Item {
+        bigint invoice_item_id PK "NOT NULL"
+        bigint invoice_id FK "NOT NULL"
+        bigint product_id FK "NOT NULL"
+        bigint project_component_id FK "NULL"
+        decimal10_2 price_at_sale "NOT NULL"
+        decimal5_2 discount
+        decimal10_2 discounted_price
+        int quantity "NOT NULL"
+        decimal10_2 total_price
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+    }
+
+    User {
+        bigint user_id PK "NOT NULL"
+        varchar50 username "NOT NULL"
+        varchar255 password_hash "NOT NULL"
+        varchar100 full_name "NOT NULL"
+        varchar100 email "NOT NULL"
+        varchar20 phone
+        enum role "DEFAULT 'staff'"
+        enum status "DEFAULT 'active'"
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+    }
+
+    Project {
+        bigint project_id PK "NOT NULL"
+        bigint customer_id FK "NOT NULL"
+        bigint quotation_id FK "NULL"
+        varchar100 name "NOT NULL"
+        enum type "solar, battery, hybrid"
+        decimal10_2 system_size_kw
+        decimal10_2 estimated_production_kwh
+        enum status "DEFAULT 'planned'"
+        date start_date
+        date completion_date
+        decimal15_2 total_cost
+        decimal10_6 site_latitude
+        decimal10_6 site_longitude
+        varchar255 site_address
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+    }
+
+    Project_Component {
+        bigint project_component_id PK "NOT NULL"
+        bigint project_id FK "NOT NULL"
+        bigint product_id FK "NOT NULL"
+        int quantity "NOT NULL"
+        varchar255 installation_location
+        varchar255 notes
+        enum status "DEFAULT 'pending'"
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+    }
+
+    Maintenance {
+        bigint maintenance_id PK "NOT NULL"
+        bigint project_id FK "NOT NULL"
+        bigint user_id FK "NOT NULL"
+        date scheduled_date
+        date performed_date
+        enum type "routine, repair, emergency"
+        enum status "DEFAULT 'scheduled'"
+        varchar255 description
+        decimal10_2 cost
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+    }
+
+    Energy_Production {
+        bigint production_id PK "NOT NULL"
+        bigint project_id FK "NOT NULL"
+        date reading_date "NOT NULL"
+        decimal10_2 kwh_produced "NOT NULL"
+        decimal10_2 performance_ratio
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    Payment {
+        bigint payment_id PK "NOT NULL"
+        bigint invoice_id FK "NOT NULL"
+        bigint customer_id FK "NOT NULL"
+        decimal15_2 amount "NOT NULL"
+        timestamp payment_date "DEFAULT CURRENT_TIMESTAMP"
+        varchar100 payment_method "NOT NULL"
+        varchar255 transaction_id
+        enum status "DEFAULT 'completed'"
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    Document {
+        bigint document_id PK "NOT NULL"
+        bigint related_id "NOT NULL"
+        varchar50 related_type "NOT NULL"
+        varchar255 file_path "NOT NULL"
+        varchar100 file_name "NOT NULL"
+        varchar50 file_type "NOT NULL"
+        bigint file_size "NOT NULL"
+        varchar255 description
+        bigint uploaded_by FK "NOT NULL"
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp deleted_at "NULL"
+    }
+
+    Customer ||--o{ Quotation : requests
+    Customer ||--o{ Project : owns
+    Customer ||--o{ Invoice : receives
+    Customer ||--o{ Payment : makes
+
+    Quotation ||--o{ Quotation_Item : contains
+    Quotation ||--o| Project : converts_to
+    Quotation }o--|| User : created_by
+
+    Product ||--o{ Quotation_Item : included_in
+    Product ||--o{ Purchase_Item : purchased_as
+    Product ||--o{ Invoice_Item : billed_as
+    Product ||--o{ Project_Component : used_in
+    Product }o--|| Supplier : supplied_by
+
+    Supplier ||--o{ Purchase : receives
+    
+    Purchase ||--o{ Purchase_Item : contains
+    Purchase }o--|| User : created_by
+
+    Invoice ||--o{ Invoice_Item : contains
+    Invoice ||--o{ Payment : receives
+    Invoice }o--|| Project : generated_for
+
+    Project ||--o{ Project_Component : consists_of
+    Project ||--o{ Maintenance : requires
+    Project ||--o{ Energy_Production : generates
+    Project }o--|| User : managed_by
+
+    Maintenance }o--|| User : performed_by
+
+    User ||--o{ Document : uploads
