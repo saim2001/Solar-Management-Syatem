@@ -1,4 +1,7 @@
 package com.solarsystem.solar_management_system.config;
 
-public class SecurityConfig {
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
+@EnableWebSecurity
+public class SecurityConfig extends WebSe {
 }
